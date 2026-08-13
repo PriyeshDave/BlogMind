@@ -1,0 +1,24 @@
+cadence_days: 2
+model: "gpt-4.1"   # or "gpt-4o", "o3", etc. — any OpenAI model on the Responses API
+max_tokens_per_call: 4000
+
+# Force a deliberately opinionated/contrarian angle every Nth post,
+# regardless of which pillar it falls on.
+contrarian_every: 5
+
+# Quality gate thresholds used by the critique pass (see generation/critique.py)
+min_word_count: 900
+max_word_count: 2200
+require_code_block: true
+require_concrete_number_or_data: true
+
+state_file: "content/.pipeline_state.json"
+drafts_dir: "content/drafts"
+published_dir: "content/published"
+
+publishing:
+  devto:
+    publish_status: "public"   # draft | public | unlisted
+    tags: ["ai", "agenticai", "machinelearning", "llm"]
+  linkedin:
+    visibility: "PUBLIC"

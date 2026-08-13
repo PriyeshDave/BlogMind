@@ -1,0 +1,56 @@
+# The 5 content pillars, rotated in order. Every 5th post cycles back to
+# pillar 1. The "contrarian_every" setting in settings.yaml forces an
+# opinionated/contrarian angle periodically regardless of pillar.
+
+pillars:
+  - id: architecture
+    name: "Architecture Deep-Dive"
+    description: >
+      Explain how a specific agent pattern works internally (ReAct,
+      plan-execute, reflexion, multi-agent orchestration, memory systems).
+      Must include a working code example and a diagram description.
+    sourcing_queries:
+      - "agent architecture pattern"
+      - "LLM agent memory system"
+      - "multi-agent orchestration"
+
+  - id: war_stories
+    name: "Production War Stories"
+    description: >
+      What breaks when agents run in production: tool-call reliability,
+      context rot, cost blowups, eval drift. Concrete failure + fix.
+    sourcing_queries:
+      - "AI agent production failure"
+      - "LLM agent reliability"
+      - "agent context window degradation"
+
+  - id: framework_teardown
+    name: "Framework Teardown"
+    description: >
+      Code-level comparison of agent frameworks (LangGraph, CrewAI, AutoGen,
+      or building raw). Must include real code, not marketing summary.
+    sourcing_queries:
+      - "LangGraph vs CrewAI"
+      - "agent framework comparison"
+      - "AutoGen release"
+
+  - id: business_mapping
+    name: "Business Problem Mapping"
+    description: >
+      Take one real business workflow (support triage, invoice processing,
+      SDR outreach) and show how an agent system solves it, with cost and
+      failure-mode analysis.
+    sourcing_queries:
+      - "AI agent business use case"
+      - "agent workflow automation ROI"
+      - "customer support AI agent"
+
+  - id: benchmarks
+    name: "Benchmarks & Experiments"
+    description: >
+      A small, original experiment comparing agent designs, models, or
+      frameworks on cost/accuracy/latency, with the raw data published.
+    sourcing_queries:
+      - "agent benchmark evaluation"
+      - "LLM agent cost accuracy tradeoff"
+      - "agent eval framework"

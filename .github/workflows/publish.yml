@@ -1,0 +1,51 @@
+name: Publish Approved Blog Post
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    # Only run if the PR was actually merged (not just closed) and it was a
+    # blog-draft PR opened by the generation workflow.
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'blog-draft')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Find the merged draft file
+        id: find_draft
+        run: |
+          FILE=$(git diff --name-only HEAD^ HEAD -- content/drafts/ | head -n 1)
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Publish everywhere
+        if: steps.find_draft.outputs.file != ''
+        run: python -m src.publishing.publish_all "${{ steps.find_draft.outputs.file }}"
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
+
+      - name: Commit moved file (drafts -> published)
+        run: |
+          git config user.name "blog-automation-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/
+          git commit -m "Publish: move approved post to content/published/" || echo "Nothing to commit"
+          git push origin main

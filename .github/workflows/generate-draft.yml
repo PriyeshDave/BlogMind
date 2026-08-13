@@ -1,0 +1,62 @@
+name: Generate Blog Draft
+
+on:
+  schedule:
+    # Runs daily at 09:00 UTC; the pipeline itself tracks the 2-day cadence
+    # via content/.pipeline_state.json so it skips days that don't fall on
+    # the rotation. (Cron can't natively express "every 2 days" reliably.)
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}  # allows manual trigger from the Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check cadence (skip if not due)
+        id: cadence
+        run: python scripts/check_cadence.py
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Generate draft
+        if: steps.cadence.outputs.should_run == 'true'
+        id: generate
+        run: |
+          DRAFT_PATH=$(python -m src.generation.pipeline | tail -n 1)
+          echo "draft_path=$DRAFT_PATH" >> "$GITHUB_OUTPUT"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Commit draft to a new branch
+        if: steps.cadence.outputs.should_run == 'true'
+        run: |
+          BRANCH="draft/$(date +%Y%m%d-%H%M%S)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          git config user.name "blog-automation-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add content/
+          git commit -m "Draft: automated post for review"
+          git push origin "$BRANCH"
+
+      - name: Open review PR
+        if: steps.cadence.outputs.should_run == 'true'
+        run: python -m src.review.create_pr "${{ steps.generate.outputs.draft_path }}" "$BRANCH"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
