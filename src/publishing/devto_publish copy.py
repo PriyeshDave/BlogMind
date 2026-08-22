@@ -51,14 +51,7 @@ def publish_to_devto(markdown_path: str, canonical_url: str | None = None) -> di
         json=payload,
         timeout=30,
     )
-
-    if not resp.ok:
-        # dev.to's error body names the specific failing field (bad tag
-        # format, duplicate title, body too short, etc.) -- surface it
-        # instead of letting raise_for_status() hide it behind a bare 422.
-        print(f"[devto] Request failed ({resp.status_code}): {resp.text}")
     resp.raise_for_status()
-
     data = resp.json()
     print(f"[devto] Published: {data.get('url')}")
     return data
