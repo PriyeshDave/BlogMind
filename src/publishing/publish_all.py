@@ -104,7 +104,12 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
 
     # 3. LinkedIn
     linkedin_text = generate_linkedin_copy(post.content, link_target)
-    publish_to_linkedin(linkedin_text, link_target)
+    publish_to_linkedin(
+        linkedin_text,
+        link_target,
+        title=post.get("title"),
+        description=post.get("subtitle"),
+    )
 
     if site_is_live:
         print("[publish_all] Done. Site publish still needs your static site build/"
