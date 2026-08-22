@@ -48,6 +48,21 @@ def move_to_published(draft_path: str) -> Path:
     return dest
 
 
+def has_real_site() -> bool:
+    """
+    Returns False if SITE_BASE_URL is unset or still the placeholder value —
+    meaning your own static site isn't live yet. In that case dev.to becomes
+    the canonical source for this post instead, so LinkedIn/Medium don't
+    link to a domain that doesn't resolve.
+
+    Once your Astro/Next.js site is deployed, set SITE_BASE_URL to the real
+    domain and this pipeline automatically switches canonical ownership back
+    to your own site for future posts.
+    """
+    base = os.environ.get("SITE_BASE_URL", "")
+    return bool(base) and "yourblog.example.com" not in base
+
+
 def canonical_url_for(post: frontmatter.Post) -> str:
     base = os.environ.get("SITE_BASE_URL", "https://yourblog.example.com")
     slug = slugify(post.get("title", "post"))
@@ -59,28 +74,44 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
     with open(published_path) as f:
         post = frontmatter.load(f)
 
-    canonical_url = canonical_url_for(post)
-    print(f"[publish_all] Canonical URL (your site): {canonical_url}")
+    site_is_live = has_real_site()
+
+    if site_is_live:
+        canonical_url = canonical_url_for(post)
+        print(f"[publish_all] Canonical URL (your site): {canonical_url}")
+    else:
+        canonical_url = None
+        print(
+            "[publish_all] No live SITE_BASE_URL set — dev.to will be the "
+            "canonical source for this post until your own site is deployed."
+        )
 
     if dry_run:
         print("[publish_all] DRY RUN — skipping actual publish calls.")
         return
 
-    # 1. dev.to
+    # 1. dev.to — only pass canonical_url if your own site is live; otherwise
+    # dev.to owns canonicality for this post.
     devto_result = publish_to_devto(str(published_path), canonical_url=canonical_url)
     devto_url = devto_result.get("url", "")
+
+    # If no site yet, everything downstream links to the dev.to URL instead.
+    link_target = canonical_url if site_is_live else devto_url
 
     # 2. Medium (semi-manual bridge via dev.to)
     print(build_import_instructions(devto_url))
     open_import_page(devto_url)
 
     # 3. LinkedIn
-    linkedin_text = generate_linkedin_copy(post.content, canonical_url)
-    publish_to_linkedin(linkedin_text, canonical_url)
+    linkedin_text = generate_linkedin_copy(post.content, link_target)
+    publish_to_linkedin(linkedin_text, link_target)
 
-    print("[publish_all] Done. Site publish still needs your static site build/"
-          "deploy step to pick up content/published/ — wire that into your "
-          "site repo's own CI if it's separate from this repo.")
+    if site_is_live:
+        print("[publish_all] Done. Site publish still needs your static site build/"
+              "deploy step to pick up content/published/ — wire that into your "
+              "site repo's own CI if it's separate from this repo.")
+    else:
+        print(f"[publish_all] Done. dev.to is canonical for now: {devto_url}")
 
 
 if __name__ == "__main__":

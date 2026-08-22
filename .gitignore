@@ -3,4 +3,4 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-content/.pipeline_state.json
+.DS_Store

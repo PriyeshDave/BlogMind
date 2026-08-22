@@ -9,7 +9,15 @@ Writes `should_run=true|false` to $GITHUB_OUTPUT.
 from __future__ import annotations
 
 import os
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
+
+# This script is invoked directly (`python scripts/check_cadence.py`), which
+# only puts scripts/ on sys.path -- not the repo root. Add the repo root
+# explicitly so `from src.utils...` resolves regardless of invocation style
+# or working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.utils.settings import get_settings
 from src.utils.storage import load_state, save_state

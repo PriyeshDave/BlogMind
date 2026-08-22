@@ -33,6 +33,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: Commit cadence state to main
+        run: |
+          git config user.name "blog-automation-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/.pipeline_state.json
+          git diff --staged --quiet || git commit -m "Update pipeline cadence state"
+          git push origin main
+
       - name: Generate draft
         if: steps.cadence.outputs.should_run == 'true'
         id: generate
@@ -43,15 +51,20 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: Commit rotation state to main
+        if: steps.cadence.outputs.should_run == 'true'
+        run: |
+          git add content/.pipeline_state.json
+          git diff --staged --quiet || git commit -m "Update pillar rotation state"
+          git push origin main
+
       - name: Commit draft to a new branch
         if: steps.cadence.outputs.should_run == 'true'
         run: |
           BRANCH="draft/$(date +%Y%m%d-%H%M%S)"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
-          git config user.name "blog-automation-bot"
-          git config user.email "actions@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add content/
+          git add content/drafts/
           git commit -m "Draft: automated post for review"
           git push origin "$BRANCH"
 
