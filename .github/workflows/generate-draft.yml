@@ -6,7 +6,12 @@ on:
     # via content/.pipeline_state.json so it skips days that don't fall on
     # the rotation. (Cron can't natively express "every 2 days" reliably.)
     - cron: "0 9 * * *"
-  workflow_dispatch: {}  # allows manual trigger from the Actions tab
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: "Bypass the 2-day cadence check (useful for testing)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,6 +37,7 @@ jobs:
         run: python scripts/check_cadence.py
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          FORCE_RUN: ${{ github.event.inputs.force_run }}
 
       - name: Commit cadence state to main
         run: |
@@ -45,7 +51,10 @@ jobs:
         if: steps.cadence.outputs.should_run == 'true'
         id: generate
         run: |
-          DRAFT_PATH=$(python -m src.generation.pipeline | tail -n 1)
+          set -o pipefail
+          OUTPUT=$(python -m src.generation.pipeline)
+          echo "$OUTPUT"
+          DRAFT_PATH=$(echo "$OUTPUT" | tail -n 1)
           echo "draft_path=$DRAFT_PATH" >> "$GITHUB_OUTPUT"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

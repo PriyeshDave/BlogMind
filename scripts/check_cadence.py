@@ -35,6 +35,12 @@ def main() -> None:
         elapsed_days = (datetime.now(timezone.utc) - last_run).days
         should_run = elapsed_days >= settings["cadence_days"]
 
+    # Manual override for testing: set FORCE_RUN=true (wired to a
+    # workflow_dispatch input) to bypass the cadence check entirely.
+    if os.environ.get("FORCE_RUN", "").lower() == "true":
+        should_run = True
+        print("[cadence] FORCE_RUN=true — bypassing cadence check.")
+
     output_path = os.environ.get("GITHUB_OUTPUT")
     if output_path:
         with open(output_path, "a") as f:
