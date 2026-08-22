@@ -6,7 +6,7 @@ sources:
 - https://github.com/sweta2503/agent-framework-benchmark
 - https://github.com/hamzaahsan334-dev/langgraph-vs-crewai
 - https://github.com/PCSchmidt/agent-framework-bakeoff
-status: pending_review
+status: published
 subtitle: You will see exactly where LangGraph, CrewAI, and AutoGen fail and succeed—supported
   by code, reproducible metrics, and architectural reasoned analysis.
 title: 'Agent Frameworks in the Real World: 107 Task Bakeoff of LangGraph, CrewAI,
