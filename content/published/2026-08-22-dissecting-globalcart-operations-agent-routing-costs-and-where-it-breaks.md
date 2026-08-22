@@ -5,7 +5,7 @@ pillar: business_mapping
 sources:
 - https://github.com/AseelHerzallah1/globalcart-operations-agent
 - https://github.com/TirthBorasaniya/agent-roi-console
-status: pending_review
+status: published
 subtitle: You will leave with code-level insight into how a production agentic triage
   system handles workflows, what the real costs look like, and where the system falls
   down in practice.
