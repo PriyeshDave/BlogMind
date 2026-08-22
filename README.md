@@ -62,7 +62,8 @@ The complete BlogMind architecture is designed around four major layers:
 
 ### High-Level Architecture
 
-![BlogMind Architecture](docs/images/BlogMind_Architecture_Diagram.png)
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/d33044eb-ceeb-4be4-bf07-34f891a88d96" />
+
 
 > The architecture intentionally separates generation from publishing and introduces a human approval gate before content reaches external platforms.
 
