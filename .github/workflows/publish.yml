@@ -29,7 +29,12 @@ jobs:
       - name: Find the merged draft file
         id: find_draft
         run: |
-          FILE=$(git diff --name-only HEAD^ HEAD -- content/drafts/ | head -n 1)
+          FILE=$(ls -t content/drafts/*.md 2>/dev/null | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "No .md file found in content/drafts/ -- nothing to publish."
+          else
+            echo "Found draft: $FILE"
+          fi
           echo "file=$FILE" >> "$GITHUB_OUTPUT"
 
       - name: Publish everywhere
