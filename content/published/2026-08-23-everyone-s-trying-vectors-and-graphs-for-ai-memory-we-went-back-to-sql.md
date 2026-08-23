@@ -6,7 +6,7 @@ sources:
 - https://news.ycombinator.com/item?id=45329322
 - https://github.com/aashir771/Memory-Layered-Agent-Core
 - https://github.com/MrPeppersDev/agent-infrastructure-landscape
-status: pending_review
+status: published
 subtitle: Get real performance and clarity on how plain SQL outperforms or complements
   modern vector DBs for persistent agentic memory—with working code and an architecture
   diagram.
