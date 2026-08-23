@@ -6,7 +6,7 @@ sources:
 - https://github.com/Jwuthri/Tracely-ai
 - https://github.com/Harshcodes04/Tripwire
 - https://github.com/clay-good/agent-replay
-status: pending_review
+status: published
 subtitle: You'll see how Tracely-ai turns live deployment failures into actionable,
   hermetic regression cases that gate future deploys—plus source-backed examples and
   code you can adapt.
