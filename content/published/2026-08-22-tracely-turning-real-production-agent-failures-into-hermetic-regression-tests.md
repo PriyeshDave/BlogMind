@@ -5,7 +5,7 @@ pillar: war_stories
 sources:
 - https://github.com/Jwuthri/Tracely
 - https://news.ycombinator.com/item?id=44735843
-status: pending_review
+status: published
 subtitle: How to capture, cluster, and weaponize live LLM agent failures to block
   regressions and drive reliability beyond what offline evals can catch.
 title: 'Tracely: Turning Real Production Agent Failures into Hermetic Regression Tests'
