@@ -3,50 +3,112 @@ Generates a short, LinkedIn-native post (hook + key insight + link) from
 the full blog post. LinkedIn rewards native text over "read my blog" links
 with no context, so this is a distinct piece of copy, not just a truncation
 of the post.
+
+Design note: earlier versions asked the LLM to produce the entire formatted
+post as free text, including mandatory hashtags and specific structure. That
+proved unreliable -- the model would drop hashtags or collapse everything
+into dense paragraphs despite explicit instructions. This version asks the
+LLM only for the *content* (headline, context, insight bullets, hashtags) as
+structured JSON, then assembles the final post deterministically in Python.
+Formatting, links, and attribution are never left to chance.
 """
 from __future__ import annotations
 
+import json
+
 from src.utils.claude_client import call_claude
 
-LINKEDIN_COPY_SYSTEM = """You write short LinkedIn posts that promote a
-technical blog post you just published.
+LINKEDIN_COPY_SYSTEM = """You extract the content for a LinkedIn post
+promoting a technical blog post you just published. You are NOT responsible
+for final formatting -- just for picking the right content.
 
-FORMATTING RULES (strict, non-negotiable):
-- Every line is 1-2 sentences MAX. Never write a paragraph of 3+ sentences
-  stacked together -- LinkedIn has no markdown, so visual whitespace is the
-  ONLY formatting tool available. Break generously.
-- Leave a blank line between every distinct idea/beat. The post should look
-  like a stack of short blocks, not paragraphs.
-- When listing findings, comparisons, or numbers (e.g. "X vs Y vs Z"), put
-  EACH one on its own line prefixed with a plain dash "- ", not folded into
-  a sentence. Example:
-  - AutoGen: 90% success, ~10s/task
-  - LangGraph: 78% success, ~13s/task
-  - CrewAI: 71% success, ~20s/task
-- MANDATORY: end with exactly 3 hashtags relevant to the specific post's
-  topic (not generic filler like #AI or #innovation) on their own final
-  line. This is required on every post, not optional.
-- Open with a specific, concrete hook (a number, a surprising claim, or a
-  sharp question) -- never "Excited to share my latest post."
-- Convey the single most useful insight from the post directly in the
-  LinkedIn text itself, don't make the reader click through to get any value.
-- End the body (before the hashtags) with a one-line reason to click, then
-  the link on its own line.
-- No emojis except at most one, and only if it earns its place.
-- Match the voice of a senior engineer, not a marketer.
+Respond ONLY with valid JSON, no markdown fences, in this shape:
+{
+  "headline": "a punchy, specific headline for the post, under 12 words -- \
+this is NOT the blog post's title verbatim, it's a hook",
+  "context_lines": [
+    "1-2 sentences explaining what this post is actually about and why it \
+matters -- a reader who hasn't clicked anything yet must understand the \
+core argument from this alone",
+    "optionally one more sentence of context if needed"
+  ],
+  "insight_bullets": [
+    "3-5 short, specific, standalone findings/claims/numbers from the post, \
+each under 20 words, each usable as its own line"
+  ],
+  "hashtags": ["#Exactly", "#Three", "#RelevantSpecificHashtags"]
+}
 
-Target total length: 130-200 words in the body, before hashtags."""
+Rules:
+- The headline and context together must let someone understand the post's
+  actual argument without clicking through -- never just tease one isolated
+  stat with no explanation of what it's from or why it matters.
+- insight_bullets must be genuinely informative on their own, not vague
+  teasers ("you won't believe what we found" is banned).
+- hashtags must be specific to this post's actual topic, never generic
+  filler like #AI or #innovation.
+- Match the voice of a senior engineer, not a marketer."""
 
 
-def generate_linkedin_copy(post_markdown: str, post_url: str) -> str:
-    user_prompt = f"""Blog post URL: {post_url}
+def _to_bold_unicode(text: str) -> str:
+    """
+    LinkedIn has no native text formatting (no markdown bold). This maps
+    ASCII letters/digits to the Unicode "Mathematical Bold" block, which
+    LinkedIn (and most platforms) render as visually bold characters --
+    the same trick real LinkedIn headline posts use. Non-alphanumeric
+    characters (spaces, punctuation) pass through unchanged.
+    """
+    result = []
+    for ch in text:
+        if "A" <= ch <= "Z":
+            result.append(chr(0x1D400 + (ord(ch) - ord("A"))))
+        elif "a" <= ch <= "z":
+            result.append(chr(0x1D41A + (ord(ch) - ord("a"))))
+        elif "0" <= ch <= "9":
+            result.append(chr(0x1D7CE + (ord(ch) - ord("0"))))
+        else:
+            result.append(ch)
+    return "".join(result)
 
-Full post content:
+
+def generate_linkedin_copy(post_markdown: str, devto_url: str, intro_post_url: str) -> str:
+    """
+    devto_url: link to the specific blog post being promoted (the primary
+        "read this" link -- also gets attached as LinkedIn's rich preview
+        card via publish_to_linkedin's content.article.source).
+    intro_post_url: link to your "how BlogMind works" post, used for the
+        attribution line so readers can find out how this content pipeline
+        works.
+    """
+    user_prompt = f"""Full blog post content:
 ---
 {post_markdown}
 ---
 
-Write the LinkedIn post, following the formatting rules exactly -- short
-lines, blank lines between beats, dash-prefixed list for any comparison
-data, and exactly 3 relevant hashtags on the final line."""
-    return call_claude(system=LINKEDIN_COPY_SYSTEM, user=user_prompt, max_tokens=700)
+Extract the headline, context, insight bullets, and hashtags as instructed."""
+
+    raw = call_claude(system=LINKEDIN_COPY_SYSTEM, user=user_prompt, max_tokens=700)
+
+    try:
+        parts = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"LinkedIn copy stage returned non-JSON:\n{raw}") from e
+
+    headline = _to_bold_unicode(parts["headline"])
+    context = "\n".join(parts["context_lines"])
+    bullets = "\n".join(f"- {b}" for b in parts["insight_bullets"])
+    hashtags = " ".join(parts["hashtags"][:3])
+
+    post = f"""{headline}
+
+{context}
+
+{bullets}
+
+Read the full breakdown: {devto_url}
+
+🧠 This post was researched, drafted, and published by BlogMind — my autonomous AI content pipeline (source → draft → critique → human review → publish). See how it works: {intro_post_url}
+
+{hashtags}"""
+
+    return post

@@ -22,3 +22,6 @@ publishing:
     tags: ["ai", "agenticai", "machinelearning", "llm"]
   linkedin:
     visibility: "PUBLIC"
+    # Your "how BlogMind works" post -- linked from every LinkedIn share as
+    # attribution. Update this if you publish a newer/better intro post.
+    intro_post_url: "https://medium.com/@priyeshdave90/i-built-an-ai-content-system-the-hard-part-wasnt-writing-1feb89cd824a"

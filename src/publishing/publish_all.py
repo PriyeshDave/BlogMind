@@ -103,7 +103,12 @@ def publish_all(draft_path: str, dry_run: bool = False) -> None:
     open_import_page(devto_url)
 
     # 3. LinkedIn
-    linkedin_text = generate_linkedin_copy(post.content, link_target)
+    linkedin_settings = get_settings()["publishing"]["linkedin"]
+    linkedin_text = generate_linkedin_copy(
+        post.content,
+        devto_url=devto_url,
+        intro_post_url=linkedin_settings["intro_post_url"],
+    )
     publish_to_linkedin(
         linkedin_text,
         link_target,
