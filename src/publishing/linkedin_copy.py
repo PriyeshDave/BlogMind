@@ -73,12 +73,23 @@ def _to_bold_unicode(text: str) -> str:
 
 def generate_linkedin_copy(post_markdown: str, devto_url: str, intro_post_url: str) -> str:
     """
-    devto_url: link to the specific blog post being promoted (the primary
-        "read this" link -- also gets attached as LinkedIn's rich preview
-        card via publish_to_linkedin's content.article.source).
-    intro_post_url: link to your "how BlogMind works" post, used for the
-        attribution line so readers can find out how this content pipeline
-        works.
+    devto_url: link to the specific blog post being promoted. NOT embedded
+        as raw text in the post body -- it's attached separately via
+        publish_to_linkedin's content.article.source, which renders as a
+        proper preview card (title, description, thumbnail). Kept as a
+        parameter here for logging/future use, not string interpolation.
+    intro_post_url: link to your "how BlogMind works" post. Also NOT
+        embedded as raw text for the same reason (see note below).
+
+    Why no raw URLs in the body: LinkedIn's Posts API silently truncates
+    the commentary text at the point a raw URL appears when that URL
+    duplicates the one already attached via content.article -- confirmed
+    by LinkedIn's own help docs, which note that a shared link with no
+    text after it gets hidden from the share entirely. In practice this
+    meant everything after "Read the full breakdown: <url>" was silently
+    dropped from the live post, even on the post's own permalink page.
+    The safe fix is to never put a raw URL in the commentary body at all;
+    the attached article card already gives readers a click-through.
     """
     user_prompt = f"""Full blog post content:
 ---
@@ -105,9 +116,7 @@ Extract the headline, context, insight bullets, and hashtags as instructed."""
 
 {bullets}
 
-Read the full breakdown: {devto_url}
-
-🧠 This post was researched, drafted, and published by BlogMind — my autonomous AI content pipeline (source → draft → critique → human review → publish). See how it works: {intro_post_url}
+🧠 Researched, drafted, and published by BlogMind — My AI-Powered Content Automation System (research -> source → draft → critique → human review → publish).
 
 {hashtags}"""
 

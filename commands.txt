@@ -1,0 +1,7 @@
+source /Users/priyeshdave6/Documents/Work/VirtualEnvironments/Priyesh-Venvs/agenticai_venv/blogmind_venv/bin/activate
+
+gh workflow run generate-draft.yml -f force_run=true
+gh run watch
+
+gh run list --workflow=publish.yml --limit 1
+gh run watch
