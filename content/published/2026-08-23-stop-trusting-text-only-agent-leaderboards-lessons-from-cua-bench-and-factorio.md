@@ -6,7 +6,7 @@ sources:
 - https://github.com/trycua/cua
 - https://jackhopkins.github.io/factorio-learning-environment/
 - https://news.ycombinator.com/item?id=43116633
-status: pending_review
+status: published
 subtitle: You'll see concrete data showing how agents that ace text-based benchmarks
   break down in GUI-driven tasks, and why leaderboard wins don't mean real-world readiness.
 title: 'Stop Trusting Text-Only Agent Leaderboards: Lessons from Cua-Bench and Factorio'
