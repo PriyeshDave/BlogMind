@@ -6,7 +6,7 @@ sources:
 - https://news.ycombinator.com/item?id=45329322
 - https://github.com/rowboatlabs/rowboat
 - https://github.com/airweave-ai/airweave
-status: pending_review
+status: published
 subtitle: Practical, code-first guide to architecting agent memory with SQL, from
   schema to query, showing why and how it's a real alternative to vector and graph
   stores.
