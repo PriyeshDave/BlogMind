@@ -5,7 +5,7 @@ pillar: framework_teardown
 sources:
 - https://github.com/sweta2503/agent-framework-benchmark
 - https://github.com/hamzaahsan334-dev/langgraph-vs-crewai
-status: pending_review
+status: published
 subtitle: A code-first, no-nonsense teardown revealing which agent orchestration framework
   scales, where boilerplate becomes pain, and why cost/performance curves matter after
   100+ real-world tasks.
