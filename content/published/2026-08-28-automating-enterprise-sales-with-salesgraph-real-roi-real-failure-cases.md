@@ -5,7 +5,7 @@ pillar: business_mapping
 sources:
 - https://github.com/api-evangelist/salesgraph
 - https://github.com/TirthBorasaniya/agent-roi-console
-status: pending_review
+status: published
 subtitle: See how open-source AI agent stacks automate sales workflows, what ROI they
   deliver, and where they still break—down to individual workflow steps.
 title: 'Automating Enterprise Sales With Salesgraph: Real ROI, Real Failure Cases'
