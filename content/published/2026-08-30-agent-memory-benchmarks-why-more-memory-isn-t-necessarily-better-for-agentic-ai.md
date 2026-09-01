@@ -5,7 +5,7 @@ pillar: benchmarks
 sources:
 - https://github.com/nradawg/agent-memory-bench
 - https://github.com/OpenAgentHQ/openagent-eval
-status: pending_review
+status: published
 subtitle: Clear, experimental evidence on when memory-heavy agents waste tokens and
   degrade recall—plus code to replicate these results for your own stack.
 title: 'Agent Memory Benchmarks: Why More Memory Isn''t Necessarily Better for Agentic
