@@ -6,7 +6,7 @@ sources:
 - https://github.com/sweta2503/agent-framework-benchmark
 - https://github.com/hamzaahsan334-dev/langgraph-vs-crewai
 - https://github.com/Adamsautomations/crewai-docs-copilot
-status: pending_review
+status: published
 subtitle: 'Cut through the marketing: see where LangGraph, CrewAI, and AutoGen fail,
   succeed, and waste your tokens—supported by hard benchmark numbers and annotated,
   real-world code.'
