@@ -6,7 +6,7 @@ sources:
 - https://github.com/Jwuthri/Tracely-ai
 - https://github.com/AgentSym/AgentSymv1
 - https://github.com/DAMediaCo/apex-agent-reliability-benchmark
-status: pending_review
+status: published
 subtitle: Walk away able to trace, replay, and regression-test real agent failures
   using open-source tooling wired into your deployment pipeline.
 title: 'How to Catch and Replay Production Agent Failures: Trace-Native CI/CD in Practice'
