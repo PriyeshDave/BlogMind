@@ -4,7 +4,7 @@ generated_at: '2026-09-04T07:10:43.994263+00:00'
 pillar: business_mapping
 sources:
 - https://arxiv.org/abs/2609.04159v1
-status: pending_review
+status: published
 subtitle: Readers will see how SENTINEL-RL restructures security investigation at
   scale, with hard cost data, a code-driven look at its architecture, and a practical
   teardown of where and why it fails.
