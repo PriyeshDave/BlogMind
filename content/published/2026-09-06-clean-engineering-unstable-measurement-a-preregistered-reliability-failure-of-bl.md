@@ -6,7 +6,7 @@ sources:
 - https://arxiv.org/abs/2609.04198v1
 - https://github.com/brunovicco/agentic-security-framework-lab
 - https://github.com/AgentEvalHQ/AgentEval
-status: pending_review
+status: published
 subtitle: You'll see why current agent benchmarks relying on LLM judges are systematically
   unreliable—even on replayed, deterministic agent task runs—and why this should discredit
   most leaderboard comparisons.
