@@ -5,7 +5,7 @@ pillar: architecture
 sources:
 - https://github.com/Nandinibajaj28/adk-multiagent-architecture
 - https://github.com/reference-architecture-ai/reference-architecture.ai
-status: pending_review
+status: published
 subtitle: A walkthrough of real code and patterns for orchestrating advanced multi-agent
   systems with Google ADK, solving problems that break most single-agent setups.
 title: 'Battle-Tested Multi-Agent Orchestration Patterns with Google ADK: Parallel,
