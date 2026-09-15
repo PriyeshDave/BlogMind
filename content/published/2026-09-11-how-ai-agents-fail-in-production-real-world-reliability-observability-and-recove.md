@@ -8,7 +8,7 @@ sources:
 - https://github.com/FailproofAI/failproofai
 - https://news.ycombinator.com/item?id=44735843
 - https://github.com/humanlayer/12-factor-agents
-status: pending_review
+status: published
 subtitle: Field-tested code and analysis to catch, diagnose, and auto-heal failure
   modes of agentic systems post-launch—no hand-waving.
 title: 'How AI Agents Fail in Production: Real-World Reliability, Observability, and
