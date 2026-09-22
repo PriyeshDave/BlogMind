@@ -5,7 +5,7 @@ pillar: framework_teardown
 sources:
 - https://github.com/sweta2503/agent-framework-benchmark
 - https://github.com/hamzaahsan334-dev/langgraph-vs-crewai
-status: pending_review
+status: published
 subtitle: Walk away with hard numbers, real-world code, and the concrete reasons LangGraph
   beats CrewAI and AutoGen for large-scale workflow automation.
 title: 'LangGraph Pulled Ahead: A Code-Level Benchmark of 3 Agent Frameworks on 107
