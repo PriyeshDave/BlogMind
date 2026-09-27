@@ -7,7 +7,7 @@ sources:
 - https://github.com/Deloney-code/ai-support-system
 - https://github.com/saiprem0007/hiver-sde-take-home
 - https://news.ycombinator.com/item?id=48087925
-status: pending_review
+status: published
 subtitle: Concrete workflow diagrams, log data, and cost analysis from open-source
   support agents that reveal where LLM-driven triage delivers and where it fails.
 title: 'When Agentic AI Breaks in Support Triage: Real Failures, True Costs, and What
