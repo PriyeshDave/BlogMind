@@ -6,7 +6,7 @@ sources:
 - https://github.com/nradawg/agent-memory-bench
 - https://www.codewithbullet.com
 - https://github.com/mastra-ai/mastra
-status: pending_review
+status: published
 subtitle: Direct, data-driven comparisons of Bullet and Mastra coding agents with
   real token-cost math reveal why memory-heavy strategies rarely justify their price.
 title: Do Coding Agents Really Need Expensive Memory? Head-to-Head Benchmarks Say
