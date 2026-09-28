@@ -6,7 +6,7 @@ sources:
 - https://github.com/gat45/jarvix-memory
 - https://github.com/raya-ac/engram
 - https://news.ycombinator.com/item?id=45329322
-status: pending_review
+status: published
 subtitle: Concrete, code-first walkthrough of persistent multi-layer memory systems
   in open-source AI agents, including a working example and architecture diagram showing
   why vector-only or stateless hacks are now obsolete.
