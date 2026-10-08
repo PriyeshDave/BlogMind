@@ -7,7 +7,7 @@ sources:
 - https://github.com/himadriganguly/context-engineering
 - https://github.com/Lucenor/mnesis
 - https://github.com/terminus-labs-ai/sr2
-status: pending_review
+status: published
 subtitle: Learn to spot, measure, and fix the creeping loss of intelligence in agentic
   LLM systems as their context grows, with real code and log examples.
 title: How Context Window Degradation Breaks Long-Running Agents in Production—and
