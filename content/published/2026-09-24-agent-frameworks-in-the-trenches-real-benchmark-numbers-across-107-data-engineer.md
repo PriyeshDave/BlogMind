@@ -6,7 +6,7 @@ sources:
 - https://github.com/sweta2503/agent-framework-benchmark
 - https://github.com/sleepworm/agent-from-zero
 - https://github.com/Adamsautomations/crewai-docs-copilot
-status: pending_review
+status: published
 subtitle: Get concrete data, runnable code, and painful failure modes for LangGraph,
   CrewAI, and AutoGen—plus why hand-rolled agents still win in certain ops scenarios.
 title: 'Agent Frameworks in the Trenches: Real Benchmark Numbers Across 107 Data Engineering
