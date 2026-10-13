@@ -6,7 +6,7 @@ sources:
 - https://github.com/manjeet23305-commits/SupportOps-AI
 - https://github.com/GouniRani29/SupportMind
 - https://github.com/Resonantly-Feral/Anyone-there
-status: pending_review
+status: published
 subtitle: See true cost, runtime, and ROI numbers from end-to-end support issue resolution
   using SupportOps-AI and SupportMind, with live-mode failure diagnostics and a clear-eyed
   view of where agentic triage underdelivers for startups and SMBs.
