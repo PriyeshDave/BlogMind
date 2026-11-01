@@ -5,7 +5,7 @@ pillar: benchmarks
 sources:
 - https://github.com/nradawg/agent-memory-bench
 - https://arxiv.org/abs/2609.35760v1
-status: pending_review
+status: published
 subtitle: You'll see side-by-side benchmarks of agent memory strategies, exposing
   how token cost—not benchmark accuracy—governs practical deployments.
 title: 'Token Cost Is the Real Bottleneck in Agentic AI: An Empirical Test of Agent
