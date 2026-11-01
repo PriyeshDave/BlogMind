@@ -5,7 +5,7 @@ pillar: war_stories
 sources:
 - https://github.com/sarkars/agent-failure-modes
 - https://github.com/onTracify/Tracify
-status: pending_review
+status: published
 subtitle: You’ll see actionable trace instrumentation, concrete failure case studies,
   and tools for root-causing agent bugs that only surface after deployment.
 title: 'Tracing Agent Failures in Production: The Unexpected Why and How to Fix It'
