@@ -6,7 +6,7 @@ sources:
 - https://github.com/shibing624/dual-mem
 - https://github.com/aashir771/Memory-Layered-Agent-Core
 - https://news.ycombinator.com/item?id=45329322
-status: pending_review
+status: published
 subtitle: A code-level comparison of real hybrid agent memory designs and how layered
   systems like DualMem and Memory-Layered-Agent-Core outperform naïve vector stores
   for complex reasoning tasks.
