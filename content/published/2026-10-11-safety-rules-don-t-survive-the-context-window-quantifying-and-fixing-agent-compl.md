@@ -8,7 +8,7 @@ sources:
 - https://github.com/Lucenor/mnesis
 - https://github.com/himadriganguly/context-engineering
 - https://github.com/skyvas/ai-memory-management
-status: pending_review
+status: published
 subtitle: Walk away knowing why LLM agents ignore injected safety rules as chats get
   longer, see real failures and benchmark data, and adopt code-first fixes to enforce
   compliance in deployed agents.
