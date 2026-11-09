@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+  # Manual re-run for a specific draft (e.g. after a failed publish).
+  workflow_dispatch:
+    inputs:
+      draft_path:
+        description: "Draft to publish, e.g. content/drafts/2026-11-03-....md"
+        required: true
 
 permissions:
   contents: write
@@ -12,12 +18,15 @@ jobs:
   publish:
     # Only run if the PR was actually merged (not just closed) and it was a
     # blog-draft PR opened by the generation workflow.
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'blog-draft')
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'blog-draft'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -28,10 +37,31 @@ jobs:
 
       - name: Find the merged draft file
         id: find_draft
+        env:
+          INPUT_DRAFT: ${{ github.event.inputs.draft_path }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
-          FILE=$(ls -t content/drafts/*.md 2>/dev/null | head -n 1)
+          if [ -n "$INPUT_DRAFT" ]; then
+            FILE="$INPUT_DRAFT"
+          else
+            # Use the draft this PR actually added/changed. `ls -t` is not safe
+            # here: a fresh checkout gives every file the same mtime, so it
+            # picked an arbitrary draft.
+            FILES=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$MERGE_SHA" -- 'content/drafts/*.md')
+            COUNT=$(printf '%s\n' "$FILES" | grep -c . || true)
+            if [ "$COUNT" -gt 1 ]; then
+              echo "::error::PR touched $COUNT drafts; expected one:"
+              echo "$FILES"
+              exit 1
+            fi
+            FILE="$FILES"
+          fi
           if [ -z "$FILE" ]; then
-            echo "No .md file found in content/drafts/ -- nothing to publish."
+            echo "No draft in this PR -- nothing to publish."
+          elif [ ! -f "$FILE" ]; then
+            echo "::error::$FILE not found in content/drafts/"
+            exit 1
           else
             echo "Found draft: $FILE"
           fi
@@ -48,6 +78,7 @@ jobs:
           SITE_BASE_URL: ${{ vars.SITE_BASE_URL }}
 
       - name: Commit moved file (drafts -> published)
+        if: steps.find_draft.outputs.file != ''
         run: |
           git config user.name "blog-automation-bot"
           git config user.email "actions@users.noreply.github.com"
