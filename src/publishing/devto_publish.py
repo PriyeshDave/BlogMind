@@ -29,11 +29,18 @@ def publish_to_devto(markdown_path: str, canonical_url: str | None = None) -> di
     with open(markdown_path) as f:
         post = frontmatter.load(f)
 
+    title = (post.get("title") or "").strip()
+    if not title:
+        raise ValueError(
+            f"{markdown_path} has no 'title' in its YAML frontmatter — dev.to "
+            "rejects untitled articles with a 422."
+        )
+
     settings = get_settings()["publishing"]["devto"]
 
     payload = {
         "article": {
-            "title": post.get("title"),
+            "title": title,
             "published": settings["publish_status"] == "public",
             "body_markdown": post.content,
             "tags": settings["tags"],
@@ -51,7 +58,9 @@ def publish_to_devto(markdown_path: str, canonical_url: str | None = None) -> di
         json=payload,
         timeout=30,
     )
-    resp.raise_for_status()
+    if not resp.ok:
+        # dev.to explains 4xx errors in the body — surface it instead of a bare status.
+        raise RuntimeError(f"[devto] {resp.status_code} from dev.to: {resp.text}")
     data = resp.json()
     print(f"[devto] Published: {data.get('url')}")
     return data

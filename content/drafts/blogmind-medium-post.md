@@ -1,8 +1,9 @@
-## Title: I Built an AI Agent That Writes and Publishes My Blog — Here's the Real Architecture (and Every Bug I Hit)
-
-### Subtitle: Sourcing, drafting, critique, human review, and multi-platform publishing — fully automated, running on a 2-day cadence, with the production failures nobody's blog post about "AI content automation" ever shows you.
-
 ---
+title: I Built an AI Agent That Writes and Publishes My Blog — Here's the Real Architecture (and Every Bug I Hit)
+subtitle: Sourcing, drafting, critique, human review, and multi-platform publishing — fully automated, running on a 2-day cadence, with the production failures nobody's blog post about "AI content automation" ever shows you.
+status: approved
+---
+
 
 Most posts about "AI content automation" show you a single prompt and a screenshot. That's not automation — that's a demo. Real automation means a pipeline that runs unattended for weeks, survives API changes, recovers from partial failures, and doesn't quietly publish garbage while you're not watching.
 
