@@ -71,6 +71,23 @@ def _to_bold_unicode(text: str) -> str:
     return "".join(result)
 
 
+# LinkedIn parses commentary as "little text": these ASCII characters are
+# reserved syntax, and an unescaped one silently truncates the post at that
+# point (e.g. "Vector store memory is fast (10-40ms" -> post ends at "fast").
+# Swap them for fullwidth look-alikes, which render near-identically and are
+# never parsed. Applied to LLM-generated text only; hashtags stay literal ASCII
+# so they still auto-link.
+_LINKEDIN_RESERVED = str.maketrans({
+    "(": "（", ")": "）", "[": "［", "]": "］", "{": "｛", "}": "｝",
+    "<": "＜", ">": "＞", "@": "＠", "#": "＃", "*": "＊", "_": "＿",
+    "~": "～", "|": "｜", "\\": "＼",
+})
+
+
+def _linkedin_safe(text: str) -> str:
+    return text.translate(_LINKEDIN_RESERVED)
+
+
 def generate_linkedin_copy(post_markdown: str, devto_url: str, intro_post_url: str) -> str:
     """
     devto_url: link to the specific blog post being promoted. NOT embedded
@@ -105,10 +122,15 @@ Extract the headline, context, insight bullets, and hashtags as instructed."""
     except json.JSONDecodeError as e:
         raise RuntimeError(f"LinkedIn copy stage returned non-JSON:\n{raw}") from e
 
-    headline = _to_bold_unicode(parts["headline"])
-    context = "\n".join(parts["context_lines"])
-    bullets = "\n".join(f"- {b}" for b in parts["insight_bullets"])
-    hashtags = " ".join(parts["hashtags"][:3])
+    headline = _to_bold_unicode(_linkedin_safe(parts["headline"]))
+    context = "\n".join(_linkedin_safe(line) for line in parts["context_lines"])
+    bullets = "\n".join(f"- {_linkedin_safe(b)}" for b in parts["insight_bullets"])
+    # Hashtags: keep "#" literal so they link; strip anything that isn't a
+    # word character so a stray reserved char can't truncate the post here.
+    hashtags = " ".join(
+        "#" + "".join(ch for ch in tag.lstrip("#") if ch.isalnum())
+        for tag in parts["hashtags"][:3]
+    )
 
     post = f"""{headline}
 
@@ -116,7 +138,7 @@ Extract the headline, context, insight bullets, and hashtags as instructed."""
 
 {bullets}
 
-🧠 Researched, drafted, and published by BlogMind — My AI-Powered Content Automation System (research -> source → draft → critique → human review → publish).
+🧠 Researched, drafted, and published by BlogMind — My AI-Powered Content Automation System （research → source → draft → critique → human review → publish）.
 
 {hashtags}"""
 
