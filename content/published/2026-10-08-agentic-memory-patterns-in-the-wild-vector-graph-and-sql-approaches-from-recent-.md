@@ -8,7 +8,7 @@ sources:
 - https://news.ycombinator.com/item?id=45329322
 - https://github.com/delicious-roundarch520/openclaw-memory-kit
 - https://www.butter.dev/
-status: pending_review
+status: published
 subtitle: You'll leave with runnable code, an architectural diagram, and an opinionated
   breakdown of real-world agent memory backends–not just theory.
 title: 'Agentic Memory Patterns in the Wild: Vector, Graph, and SQL Approaches from
